@@ -342,7 +342,7 @@ static inline void qdf_vprint(const char *fmt, va_list args)
 #ifdef PANIC_ON_BUG
 
 /* CONFIG_ARCH_EXYNOS9 Remove SLUB DEBUG qcacmn: issue force assert instead of triggering panic */
-//#ifdef CONFIG_SLUB_DEBUG
+//#if defined(CONFIG_SLUB_DEBUG) && defined(WLAN_DEBUG)
 
 /**
  * __qdf_bug() - Calls BUG() when the PANIC_ON_BUG compilation option is enabled
