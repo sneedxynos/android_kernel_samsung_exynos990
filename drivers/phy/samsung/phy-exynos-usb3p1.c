@@ -743,7 +743,7 @@ static u16 phy_exynos_usb_v3p1_ssp_cr_access(struct exynos_usbphy_info *info,
 			g2phy_crparcon0 = readl(base + EXYNOS_USBCON_G2PHY_CRPARCON0);
 			g2phy_crparcon0 |= (G2PHY_CRPARCON0_CR_PARA_ADDR(addr)|(G2PHY_CRPARCON0_CR_PARA_CLK));
 
-			if (cr_op == USBCON_CR_WRITE) {
+			if (cr_op == USBCON_CR_SSP_WRITE) {
 				g2phy_crparcon2 = readl(base + EXYNOS_USBCON_G2PHY_CRPARCON2);
 				g2phy_crparcon2 |= (G2PHY_CRPARCON2_CR_PARA_WR_DATA(data)|G2PHY_CRPARCON2_CR_PARA_WR_EN);
 
@@ -764,7 +764,7 @@ static u16 phy_exynos_usb_v3p1_ssp_cr_access(struct exynos_usbphy_info *info,
 			g2phy_crparcon0 &= ~(0x1 << phy_exynos_usb_v3p1_ssp_cr_clk_down(info));	// Toggle Low
 
 		} else if (loop_cnt == 2) {
-			if (cr_op == USBCON_CR_WRITE) {
+			if (cr_op == USBCON_CR_SSP_WRITE) {
 				//g2phy_crparcon2 = readl(base + EXYNOS_USBCON_G2PHY_CRPARCON2);
 				//g2phy_crparcon2 &= ~(G2PHY_CRPARCON2_CR_PARA_WR_EN);
 
