@@ -506,6 +506,7 @@ else
        CONFIG_WLAN_MWS_INFO_DEBUGFS := n
        CONFIG_WLAN_FEATURE_MIB_STATS := n
 endif
+CONFIG_WLAN_FEATURE_MIB_STATS := y
 
 # Feature flags which are not (currently) configurable via Kconfig
 
