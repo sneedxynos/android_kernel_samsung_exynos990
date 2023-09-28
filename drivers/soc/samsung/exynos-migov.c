@@ -91,12 +91,12 @@ static struct migov {
 
 	ktime_t				start_time;
 	ktime_t				end_time;
-
+#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 	u64				start_frame_cnt;
 	u64				end_frame_cnt;
 	u64				start_frame_vsync_cnt;
 	u64				end_frame_vsync_cnt;
-
+#endif
 #if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 	s32				notified_fps;
 	struct work_struct		fps_work;
@@ -325,6 +325,7 @@ int migov_fops_release(struct inode *node, struct file *filp)
 /******************************************************************************/
 /*                                FPS functions                               */
 /******************************************************************************/
+#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 extern ems_frame_cnt;
 static u64 get_frame_cnt(void)
 {
@@ -337,7 +338,6 @@ static u64 get_frame_vsync_cnt(void)
 	return frame_vsync_cnt;
 }
 
-#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 static void migov_fps_change_work(struct work_struct *work)
 {
 	mutex_lock(&migov.lock);
@@ -473,20 +473,23 @@ void migov_update_profile(void)
 
 	migov.end_time = ktime_get();
 	psd.profile_time_ms = ktime_to_ms(ktime_sub(migov.end_time, migov.start_time));
+#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 	migov.end_frame_cnt = get_frame_cnt();
 	migov.end_frame_vsync_cnt = get_frame_vsync_cnt();
+
 	psd.profile_frame_cnt = migov.end_frame_cnt - migov.start_frame_cnt;
 	psd.profile_frame_vsync_cnt = migov.end_frame_vsync_cnt - migov.start_frame_vsync_cnt;
-
+#endif
 	for_each_domain(dom, id) {
 		dom->fn->update_mode(id, 1);
 		migov_get_profile_data(dom);
 	}
 
 	migov.start_time = migov.end_time;
+#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 	migov.start_frame_cnt = migov.end_frame_cnt;
 	migov.start_frame_vsync_cnt = migov.end_frame_vsync_cnt;
-
+#endif
 	mutex_unlock(&migov.lock);
 }
 
@@ -504,9 +507,10 @@ void migov_start_profile(void)
 
 	migov.running = true;
 	migov.start_time = ktime_get();
+#if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 	migov.start_frame_cnt = get_frame_cnt();
 	migov.start_frame_vsync_cnt = get_frame_vsync_cnt();
-
+#endif
 	if (!migov.profile_only) {
 		set_lbt_overutil_with_migov(1);
 		if (is_enabled(MIGOV_CL0) || is_enabled(MIGOV_CL1) || is_enabled(MIGOV_CL2))

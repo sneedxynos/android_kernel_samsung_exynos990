@@ -3038,6 +3038,7 @@ static void decon_update_regs(struct decon_device *decon,
 	s64 hiber_time;
 	s64 fence_time;
 #endif
+	struct vrr_config_data *vrr_config = &regs->vrr_config;
 
 	if (!decon->systrace.pid)
 		decon->systrace.pid = current->pid;
@@ -3189,6 +3190,9 @@ static void decon_update_regs(struct decon_device *decon,
 		if (regs->dpp_config[DECON_WIN_UPDATE_IDX].state &
 				DECON_WIN_STATE_MRESOL) {
 			dpu_set_mres_config(decon, regs);
+			vrr_config->fps = regs->fps;
+			vrr_config->mode = DECON_WIN_STATE_VRR_HSMODE;
+			dpu_set_vrr_config(decon, vrr_config);
 #if IS_ENABLED(CONFIG_EXYNOS_FPS_CHANGE_NOTIFY)
 			if (decon->lcd_info->fps != regs->fps)
 				notify_fps_change(regs->fps);
