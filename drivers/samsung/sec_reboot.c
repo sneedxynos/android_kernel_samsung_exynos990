@@ -316,7 +316,7 @@ static void sec_reboot(enum reboot_mode reboot_mode, const char *cmd)
 {
 	local_irq_disable();
 
-	pr_emerg("%s (%d, %s)\n", __func__, reboot_mode, cmd ? cmd : "(null)");
+	pr_emerg("%s (%d, %s)\n", __func__, reboot_mode, (char*)(cmd ? cmd : "(null)"));
 
 	secdbg_base_clear_magic_rambase();
 
